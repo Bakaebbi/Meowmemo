@@ -12,3 +12,11 @@ main {
     max-width: 960px;
     margin: auto;
 }
+
+.cat-profile {
+    margin-top: 24px;
+    padding: 24px;
+
+    border-radius: 16px;
+    background-color: #DAD2F5;
+}
