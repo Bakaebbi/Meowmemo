@@ -18,7 +18,8 @@ export function loadAvatar() {
         }
 
         if (!isValidAvatar(avatar)) {
-            throw new Error('Некорректный формат аватара');
+            console.error('Некорректный формат аватара');
+            return null;
         }
 
         return avatar;
@@ -32,7 +33,8 @@ export function loadAvatar() {
 export function saveAvatar(avatar) {
     try {
         if (!isValidAvatar(avatar)) {
-            throw new Error('Некорректный формат аватара');
+            console.error('Некорректный формат аватара');
+            return false;
         }
 
         localStorage.setItem('meowmemo:cat-avatar', avatar);
@@ -60,7 +62,8 @@ export function loadCatName() {
         }
 
         if (!isValidCatName(name)) {
-            throw new Error('Некорректное имя котика');
+            console.error('Некорректное имя котика');
+            return null;
         }
 
         return name.trim();
@@ -74,7 +77,8 @@ export function loadCatName() {
 export function saveCatName(name) {
     try {
         if (!isValidCatName(name)) {
-            throw new Error('Некорректное имя котика');
+            console.error('Некорректное имя котика');
+            return false;
         }
 
         localStorage.setItem('meowmemo:cat-name', name.trim());
@@ -98,7 +102,8 @@ export function loadTaskList() {
         const tasks = JSON.parse(serializedTasks);
 
         if (!isValidTaskList(tasks)) {
-            throw new Error('Некорректный список задач');
+            console.error('Некорректный список задач');
+            return null;
         }
 
         return tasks;
@@ -112,7 +117,8 @@ export function loadTaskList() {
 export function saveTaskList(tasks) {
     try {
         if (!isValidTaskList(tasks)) {
-            throw new Error('Некорректный список задач');
+            console.error('Некорректный список задач');
+            return false;
         }
 
         localStorage.setItem('meowmemo:task-list', JSON.stringify(tasks));
@@ -143,7 +149,8 @@ export function saveTasks(dateKey, tasksState) {
 export function saveNote(dateKey, note) {
     try {
         if (typeof note !== 'string' || note.length > NOTE_MAX_LENGTH) {
-            throw new Error('Некорректный формат заметки');
+            console.error('Некорректный формат заметки');
+            return false;
         }
 
         localStorage.setItem(`meowmemo:note:${dateKey}`, note);
@@ -161,7 +168,8 @@ export function loadNote(dateKey) {
         const note = localStorage.getItem(`meowmemo:note:${dateKey}`);
 
         if (note !== null && note.length > NOTE_MAX_LENGTH) {
-            throw new Error('Некорректный формат заметки');
+            console.error('Некорректный формат заметки');
+            return null;
         }
 
         return note;
@@ -191,7 +199,8 @@ export function loadTasks(dateKey) {
                 (value) => typeof value === 'boolean'
             )
         ) {
-            throw new Error('Некорректный формат задач');
+            console.error('Некорректный формат задач');
+            return null;
         }
 
         return tasksState;

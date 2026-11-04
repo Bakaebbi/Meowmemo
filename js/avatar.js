@@ -91,7 +91,8 @@ export function initAvatar() {
             const avatar = await prepareAvatar(file);
 
             if (!saveAvatar(avatar)) {
-                throw new Error('Не удалось сохранить фото. Попробуй ещё раз');
+                status.textContent = 'Не удалось сохранить фото. Попробуй ещё раз';
+                return;
             }
 
             showAvatar(avatar);
