@@ -10,7 +10,6 @@ export const DEFAULT_TASKS = [
 
 export function isValidTaskList(tasks) {
     return Array.isArray(tasks)
-        && tasks.length > 0
         && tasks.every((task) => task !== null
             && typeof task === 'object'
             && typeof task.id === 'string'
@@ -49,7 +48,15 @@ export function renderTasks(container, tasks, state = {}) {
         editButton.setAttribute('aria-label', `Изменить задачу «${title}»`);
         editButton.setAttribute('aria-expanded', 'false');
         editButton.setAttribute('aria-controls', `edit-task-${id}`);
-        row.append(checkbox, label, editButton);
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.dataset.action = 'delete';
+        deleteButton.textContent = 'Удалить';
+        deleteButton.setAttribute('aria-label', `Удалить задачу «${title}»`);
+        const actions = document.createElement('div');
+        actions.className = 'task-actions';
+        actions.append(editButton, deleteButton);
+        row.append(checkbox, label, actions);
 
         const form = document.createElement('form');
         form.id = `edit-task-${id}`;

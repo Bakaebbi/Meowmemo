@@ -77,7 +77,9 @@ export function renderHistory(container, emptyMessage, today = new Date()) {
             } else {
                 const taskStates = Object.values(tasks);
                 const completedCount = taskStates.filter((isCompleted) => isCompleted).length;
-                progress.textContent = `Выполнено ${completedCount} из ${taskStates.length}`;
+                progress.textContent = taskStates.length === 0
+                    ? 'В списке не было задач'
+                    : `Выполнено ${completedCount} из ${taskStates.length}`;
 
                 if (taskStates.length > 0 && completedCount === taskStates.length) {
                     progress.classList.add('history-result-complete');

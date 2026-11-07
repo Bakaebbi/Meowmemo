@@ -1,10 +1,10 @@
 import { loadAvatar, saveAvatar } from './storage.js';
+import { initAvatarCrop } from './avatar-crop.js';
 
-const AVATAR_SIZE = 256;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-async function prepareAvatar(file) {
+async function readAvatarImage(file) {
     if (!ACCEPTED_TYPES.includes(file.type)) {
         throw new Error('Выбери изображение JPG, PNG или WebP');
     }
@@ -20,28 +20,7 @@ async function prepareAvatar(file) {
         image.src = objectUrl;
         await image.decode();
 
-        const canvas = document.createElement('canvas');
-        canvas.width = AVATAR_SIZE;
-        canvas.height = AVATAR_SIZE;
-        const context = canvas.getContext('2d');
-
-        if (!context) {
-            throw new Error('Не удалось обработать фото в этом браузере');
-        }
-
-        const cropSize = Math.min(image.naturalWidth, image.naturalHeight);
-        const cropX = (image.naturalWidth - cropSize) / 2;
-        const cropY = (image.naturalHeight - cropSize) / 2;
-
-        context.fillStyle = '#FFFFFF';
-        context.fillRect(0, 0, AVATAR_SIZE, AVATAR_SIZE);
-        context.drawImage(
-            image,
-            cropX, cropY, cropSize, cropSize,
-            0, 0, AVATAR_SIZE, AVATAR_SIZE
-        );
-
-        return canvas.toDataURL('image/jpeg', 0.85);
+        return image;
     } finally {
         URL.revokeObjectURL(objectUrl);
     }
@@ -53,6 +32,15 @@ export function initAvatar() {
     const button = document.querySelector('#choose-cat-avatar');
     const input = document.querySelector('#cat-avatar-file');
     const status = document.querySelector('#cat-avatar-status');
+    const cropper = initAvatarCrop((avatar) => {
+        if (!saveAvatar(avatar)) {
+            return false;
+        }
+
+        showAvatar(avatar);
+        status.textContent = 'Фото сохранено';
+        return true;
+    });
 
     function showAvatar(avatar) {
         image.src = avatar;
@@ -88,15 +76,9 @@ export function initAvatar() {
         status.textContent = 'Подготавливаем фото…';
 
         try {
-            const avatar = await prepareAvatar(file);
-
-            if (!saveAvatar(avatar)) {
-                status.textContent = 'Не удалось сохранить фото. Попробуй ещё раз';
-                return;
-            }
-
-            showAvatar(avatar);
-            status.textContent = 'Фото сохранено';
+            const source = await readAvatarImage(file);
+            cropper.open(source);
+            status.textContent = '';
         } catch (error) {
             status.textContent = error.name === 'EncodingError'
                 ? 'Не удалось прочитать изображение. Выбери другое фото'

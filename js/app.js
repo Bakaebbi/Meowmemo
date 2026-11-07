@@ -7,8 +7,6 @@ import { renderHistory } from './history.js';
 import { DEFAULT_TASKS, TASK_TITLE_MAX_LENGTH, renderTasks } from './tasks.js';
 import { initProfile } from './profile.js';
 
-console.log('Meowmemo запущен');
-
 initProfile();
 
 const tasksProgress = document.querySelector('#tasks-progress');
@@ -37,8 +35,9 @@ function updateTasksProgress() {
         '.task-list input[type="checkbox"]:checked'
     );
 
-    tasksProgress.textContent =
-        `Выполнено ${completedTasks.length} из ${tasks.length}`;
+    tasksProgress.textContent = tasks.length === 0
+        ? 'Задач пока нет. Добавь первую задачу'
+        : `Выполнено ${completedTasks.length} из ${tasks.length}`;
 }
 
 let activeDateKey = getLocalDateKey();
@@ -183,6 +182,7 @@ function closeTaskEditor(item) {
     item.querySelector('.task-title').hidden = false;
     const button = item.querySelector('[data-action="edit"]');
     button.hidden = false;
+    item.querySelector('.task-actions').hidden = false;
     button.setAttribute('aria-expanded', 'false');
 }
 
@@ -194,6 +194,32 @@ taskList.addEventListener('click', (event) => {
     }
 
     const item = button.closest('li');
+    const id = item.dataset.taskId;
+
+    if (button.dataset.action === 'delete') {
+        const task = tasks.find((entry) => entry.id === id);
+
+        if (!window.confirm(`Удалить задачу «${task.title}»? Записи прошлых дней останутся в истории.`)) {
+            return;
+        }
+
+        checkDateChange();
+        const nextTasks = tasks.filter((entry) => entry.id !== id);
+
+        if (!saveTaskList(nextTasks)) {
+            tasksStatus.textContent = 'Не удалось удалить задачу. Попробуй ещё раз';
+            return;
+        }
+
+        const state = getTasksState();
+        tasks = nextTasks;
+        renderTasks(taskList, tasks, state);
+        persistTasks();
+        const nextButton = taskList.querySelector('[data-action="edit"]');
+        (nextButton ?? toggleAddTask).focus();
+        return;
+    }
+
     const form = item.querySelector('form');
     const input = form.elements.namedItem('title');
     const editButton = item.querySelector('[data-action="edit"]');
@@ -203,6 +229,7 @@ taskList.addEventListener('click', (event) => {
         form.hidden = false;
         item.querySelector('.task-title').hidden = true;
         editButton.hidden = true;
+        item.querySelector('.task-actions').hidden = true;
         editButton.setAttribute('aria-expanded', 'true');
         input.focus();
         input.select();
@@ -274,6 +301,3 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('focus', checkDateChange);
 
 setInterval(checkDateChange, 60_000);
-
-console.log(getLocalDateKey());
-console.log(getTasksState());

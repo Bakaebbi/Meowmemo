@@ -4,34 +4,44 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/style.css">
+        <link rel="icon" type="image/svg+xml" href="assets/meowmemo-mark.svg">
         <title>Meowmemo</title>
     </head>
     <body>
         <main>
-            <h1>Meowmemo</h1>
-            <p>Каждый день немного заботы для Вашего питомца</p>
+            <header class="app-header">
+                <div class="brand">
+                    <img class="brand-mark" src="assets/meowmemo-mark.svg" alt="" width="88" height="88">
+                    <h1 class="brand-name">Meow<span>memo</span></h1>
+                </div>
+                <p class="brand-tagline">Каждый день немного заботы для Вашего питомца</p>
+            </header>
 
             <section class="cat-profile" aria-labelledby="cat-profile-title">
                 <h2 id="cat-profile-title">Мой котик</h2>
-                <div class="cat-avatar-controls">
-                    <button id="choose-cat-avatar" class="cat-avatar" type="button" aria-label="Добавить фото котика" title="Добавить фото котика">
-                        <span id="cat-avatar-placeholder" aria-hidden="true">Добавить фото</span>
-                        <img id="cat-avatar-image" alt="Аватар котика" width="96" height="96" hidden>
-                    </button>
-                    <input id="cat-avatar-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                <div class="cat-profile-body">
+                    <div class="cat-avatar-controls">
+                        <button id="choose-cat-avatar" class="cat-avatar" type="button" aria-label="Добавить фото котика" title="Добавить фото котика">
+                            <span id="cat-avatar-placeholder" aria-hidden="true">Добавить фото</span>
+                            <img id="cat-avatar-image" alt="Аватар котика" width="96" height="96" hidden>
+                        </button>
+                        <input id="cat-avatar-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                    </div>
+                    <div class="cat-profile-details">
+                        <p id="cat-avatar-status" role="status"></p>
+                        <div class="cat-profile-row">
+                            <p id="cat-name-display">Имя: <span id="cat-name">Шифу</span></p>
+                            <button id="edit-cat-name" type="button" aria-expanded="false" aria-controls="cat-name-form">Изменить имя</button>
+                            <form id="cat-name-form" hidden>
+                                <label for="cat-name-input">Имя котика</label>
+                                <input id="cat-name-input" name="catName" type="text" maxlength="40" required>
+                                <button type="submit">Готово</button>
+                                <button id="cancel-cat-name" type="button">Отмена</button>
+                            </form>
+                        </div>
+                        <p id="cat-name-status" role="status"></p>
+                    </div>
                 </div>
-                <p id="cat-avatar-status" role="status"></p>
-                <div class="cat-profile-row">
-                    <p id="cat-name-display">Имя: <span id="cat-name">Шифу</span></p>
-                    <button id="edit-cat-name" type="button" aria-expanded="false" aria-controls="cat-name-form">Изменить имя</button>
-                    <form id="cat-name-form" hidden>
-                        <label for="cat-name-input">Имя котика</label>
-                        <input id="cat-name-input" name="catName" type="text" maxlength="40" required>
-                        <button type="submit">Готово</button>
-                        <button id="cancel-cat-name" type="button">Отмена</button>
-                    </form>
-                </div>
-                <p id="cat-name-status" role="status"></p>
             </section>
 
             <section class="daily-tasks" aria-labelledby="daily-tasks-title">
@@ -65,10 +75,24 @@
             </section>
             <section class="history" aria-labelledby="history-title">
                 <h2 id="history-title">Последние семь дней</h2>
-                <p id="history-empty" hidden>История пока пуста. Отметь задачу или добавь заметку.</p>
+                <p id="history-empty" hidden>История пока пуста. Отметь задачу или добавь заметку</p>
                 <ol id="history-list" class="history-list"></ol>
             </section>
         </main>
+
+        <dialog id="avatar-crop-dialog" class="avatar-crop-dialog" aria-labelledby="avatar-crop-title" aria-describedby="avatar-crop-help">
+            <h2 id="avatar-crop-title">Выбери лучший ракурс</h2>
+            <p id="avatar-crop-help">Перетаскивай фото и меняй масштаб. Для перемещения с клавиатуры используй стрелки.</p>
+            <canvas id="avatar-crop-canvas" width="320" height="320" tabindex="0" aria-label="Область кадрирования фотографии"></canvas>
+            <label class="avatar-crop-zoom" for="avatar-crop-zoom">Масштаб
+                <input id="avatar-crop-zoom" type="range" min="1" max="3" step="0.01" value="1">
+            </label>
+            <p id="avatar-crop-status" role="status"></p>
+            <div class="avatar-crop-actions">
+                <button id="avatar-crop-cancel" type="button">Отмена</button>
+                <button id="avatar-crop-save" type="button">Сохранить фото</button>
+            </div>
+        </dialog>
 
         <script type="module" src="js/app.js"></script>
     </body>

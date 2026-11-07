@@ -9,16 +9,83 @@ body {
 }
 
 main {
-    max-width: 960px;
+    display: grid;
+    grid-template-areas:
+        "header"
+        "profile"
+        "tasks"
+        "note"
+        "history";
+    gap: 24px;
+    max-width: 1120px;
     margin: auto;
 }
 
+main > * {
+    min-width: 0;
+}
+
+.app-header {
+    grid-area: header;
+    padding: 16px 0 12px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.brand-mark {
+    display: block;
+    flex-shrink: 0;
+    width: 88px;
+    height: 88px;
+}
+
+.brand-name {
+    min-width: 0;
+    margin: 0;
+    color: #3C3154;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    font-size: clamp(30px, 6vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 1.1;
+}
+
+.brand-name span {
+    color: #785A9C;
+}
+
+.brand-tagline {
+    max-width: 440px;
+    margin: 16px 0 0;
+    color: #71677D;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
 .cat-profile {
-    margin-top: 24px;
+    grid-area: profile;
+    align-self: start;
     padding: 24px;
 
     border-radius: 16px;
     background-color: #DAD2F5;
+}
+
+.cat-profile-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.cat-profile-details {
+    flex: 1 1 140px;
+    min-width: 0;
 }
 
 .cat-profile h2 {
@@ -34,7 +101,7 @@ main {
     flex-wrap: wrap;
     align-items: center;
     gap: 16px;
-    margin: 20px 0;
+    margin: 0;
 }
 
 .cat-profile .cat-avatar {
@@ -43,11 +110,12 @@ main {
     place-items: center;
     width: 96px;
     height: 96px;
-    padding: 0;
-    border: 0;
+    padding: 4px;
+    border: 1px solid #BBAAD6;
     overflow: hidden;
-    border-radius: 50%;
+    border-radius: 20px;
     background-color: #F6F3FF;
+    box-shadow: 0 4px 10px rgb(60 49 69 / 8%);
 }
 
 .cat-profile .cat-avatar:hover {
@@ -71,6 +139,96 @@ main {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 15px;
+}
+
+.avatar-crop-dialog {
+    box-sizing: border-box;
+    width: min(432px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 24px;
+    overflow: auto;
+    border: 1px solid #DAD2F5;
+    border-radius: 24px;
+    background-color: #FFFEFC;
+    color: #3C3145;
+    box-shadow: 0 24px 80px rgb(60 49 69 / 20%);
+}
+
+.avatar-crop-dialog::backdrop {
+    background-color: rgb(60 49 69 / 45%);
+}
+
+.avatar-crop-dialog h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+}
+
+.avatar-crop-dialog p {
+    margin: 0 0 16px;
+    font-size: 14px;
+}
+
+#avatar-crop-canvas {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    cursor: grab;
+    touch-action: none;
+}
+
+#avatar-crop-canvas:active {
+    cursor: grabbing;
+}
+
+.avatar-crop-zoom {
+    display: grid;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.avatar-crop-zoom input {
+    width: 100%;
+    margin: 0 0 16px;
+    accent-color: #604682;
+}
+
+.avatar-crop-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.avatar-crop-actions button {
+    padding: 10px 14px;
+    border: 1px solid #DAD2F5;
+    border-radius: 10px;
+    background-color: #F6F3FF;
+    color: inherit;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.avatar-crop-actions button:hover {
+    background-color: #EEE8FA;
+}
+
+#avatar-crop-save {
+    background-color: #DAD2F5;
+}
+
+#avatar-crop-save:hover {
+    background-color: #C9BAE8;
+}
+
+.avatar-crop-dialog :focus-visible {
+    outline: 2px solid #604682;
+    outline-offset: 3px;
 }
 
 #cat-avatar-status:not(:empty) {
@@ -89,7 +247,8 @@ main {
 }
 
 .cat-profile-row {
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 #cat-name-display {
@@ -119,7 +278,12 @@ main {
 }
 
 .daily-tasks {
-    margin-top: 32px;
+    grid-area: tasks;
+    align-self: start;
+    padding: 24px;
+    border: 1px solid #E6E0EE;
+    border-radius: 20px;
+    background-color: #FFFEFC;
 }
 
 .tasks-header {
@@ -136,21 +300,21 @@ main {
 
 .task-list {
     display: grid;
-    gap: 12px;
+    gap: 8px;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
 .task-row {
-    border: 1px solid #DAD2F5;
+    border: 1px solid #E6E0EE;
     border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 10px;
     min-height: 44px;
-    padding: 10px 12px;
-    background-color: #FFFEFC;
+    padding: 8px 10px;
+    background-color: #F6F3FF;
 }
 
 .task-row label {
@@ -250,6 +414,22 @@ main {
     font-size: 14px;
 }
 
+.task-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 4px;
+}
+
+.task-row [data-action="delete"] {
+    border-color: transparent;
+    background-color: transparent;
+    color: #8B3D40;
+}
+
+.task-row [data-action="delete"]:hover {
+    background-color: #F8E6E5;
+}
+
 .task-row [data-action="edit"] {
     border-color: transparent;
     background-color: transparent;
@@ -265,7 +445,21 @@ main {
 }
 
 .daily-note {
-    margin-top: 32px;
+    grid-area: note;
+    align-self: start;
+    padding: 24px;
+    border: 1px solid #E6E0EE;
+    border-radius: 20px;
+    background-color: #FFFEFC;
+}
+
+.daily-note h2 {
+    margin: 0 0 16px;
+}
+
+#tasks-status:empty,
+#daily-note-status:empty {
+    display: none;
 }
 
 .daily-note label {
@@ -301,7 +495,8 @@ main {
     --history-green: #DDEBD8;
     --history-green-ink: #354D30;
 
-    margin-top: 40px;
+    grid-area: history;
+    margin-top: 8px;
     color: var(--history-ink);
 }
 
@@ -400,7 +595,7 @@ main {
 
 .history-entry-empty {
     padding-block: 16px;
-    background-color: transparent;
+    background-color: #EEE8FA;
     box-shadow: none;
 }
 
@@ -410,7 +605,95 @@ main {
     font-size: 14px;
 }
 
+@media (min-width: 900px) {
+    main {
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+        grid-template-areas:
+            "header header"
+            "profile tasks"
+            "note tasks"
+            "history history";
+        align-items: start;
+        grid-template-rows: auto auto 1fr auto;
+    }
+
+    .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+    }
+
+    .brand-tagline {
+        max-width: 260px;
+        margin: 0;
+    }
+}
+
+@media (min-width: 700px) {
+    .history-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 12px;
+    }
+
+    .history-entry-today {
+        grid-column: 1 / -1;
+    }
+}
+
 @media (max-width: 480px) {
+    body {
+        padding: 16px;
+    }
+
+    main {
+        gap: 20px;
+    }
+
+    .cat-profile,
+    .daily-tasks,
+    .daily-note {
+        padding: 16px;
+    }
+
+    .cat-profile-body {
+        gap: 12px;
+    }
+
+    .cat-profile .cat-avatar {
+        flex-basis: 80px;
+        width: 80px;
+        height: 80px;
+    }
+
+    .app-header {
+        padding-top: 4px;
+    }
+
+    .brand {
+        gap: 12px;
+    }
+
+    .brand-mark {
+        width: 60px;
+        height: 60px;
+    }
+
+    .brand-tagline {
+        margin-top: 12px;
+        font-size: 14px;
+    }
+
+    .task-actions {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .task-actions button {
+        padding-block: 6px;
+    }
+
     .task-row {
         gap: 8px;
         padding-inline: 8px;
