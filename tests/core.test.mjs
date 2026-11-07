@@ -81,6 +81,11 @@ test('переименование не меняет отметки и запи�
     assert.deepEqual(loadTasks('2026-11-07'), { food: false, water: true });
 });
 
+test('имя не создаётся автоматически при первом чтении', () => {
+    assert.equal(loadCatName(), null);
+    assert.equal(records.has('meowmemo:cat-name'), false);
+});
+
 test('невалидные данные отклоняются, предыдущая запись сохраняется', () => {
     saveCatName(' Шифу ');
     assert.equal(loadCatName(), 'Шифу');

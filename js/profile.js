@@ -10,13 +10,21 @@ export function initProfile() {
     const cancelButton = document.querySelector('#cancel-cat-name');
     const status = document.querySelector('#cat-name-status');
     const noteLabel = document.querySelector('#daily-note-label');
-    let catName = loadCatName() ?? nameText.textContent;
+    const welcomeDialog = document.querySelector('#welcome-dialog');
+    const welcomeForm = document.querySelector('#welcome-form');
+    const welcomeInput = document.querySelector('#welcome-cat-name');
+    const welcomeStatus = document.querySelector('#welcome-status');
+    let catName = loadCatName();
 
     input.maxLength = CAT_NAME_MAX_LENGTH;
+    welcomeInput.maxLength = CAT_NAME_MAX_LENGTH;
 
     function renderName() {
-        nameText.textContent = catName;
-        noteLabel.textContent = `Как сегодня чувствует себя ${catName}?`;
+        nameText.textContent = catName ?? 'Не указано';
+        editButton.textContent = catName ? 'Изменить имя' : 'Указать имя';
+        noteLabel.textContent = catName
+            ? `Как сегодня чувствует себя ${catName}?`
+            : 'Как сегодня чувствует себя твой котик?';
     }
 
     function closeEditor() {
@@ -24,13 +32,13 @@ export function initProfile() {
         nameDisplay.hidden = false;
         editButton.hidden = false;
         editButton.setAttribute('aria-expanded', 'false');
-        input.value = catName;
+        input.value = catName ?? '';
         input.setCustomValidity('');
         editButton.focus();
     }
 
     editButton.addEventListener('click', () => {
-        input.value = catName;
+        input.value = catName ?? '';
         status.textContent = '';
         form.hidden = false;
         nameDisplay.hidden = true;
@@ -54,26 +62,64 @@ export function initProfile() {
         }
     });
 
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const nextName = input.value.trim();
-        input.setCustomValidity(nextName ? '' : 'Введи имя котика');
+    function trySaveName(field, message) {
+        const nextName = field.value.trim();
+        field.setCustomValidity(nextName ? '' : 'Введи имя котика');
 
-        if (!input.reportValidity()) {
-            return;
+        if (!field.reportValidity()) {
+            return false;
         }
 
         if (!saveCatName(nextName)) {
-            status.textContent = 'Не удалось сохранить имя. Попробуй ещё раз';
-            return;
+            message.textContent = 'Не удалось сохранить имя. Попробуй ещё раз';
+            return false;
         }
 
         catName = nextName;
         renderName();
+
+        return true;
+    }
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (!trySaveName(input, status)) {
+            return;
+        }
+
         closeEditor();
         status.textContent = 'Имя сохранено';
     });
 
+    welcomeInput.addEventListener('input', () => welcomeInput.setCustomValidity(''));
+    welcomeForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (!trySaveName(welcomeInput, welcomeStatus)) {
+            return;
+        }
+
+        welcomeDialog.close();
+        editButton.focus();
+    });
+
+    welcomeDialog.addEventListener('cancel', (event) => {
+        if (!catName) {
+            event.preventDefault();
+        }
+    });
+
+    welcomeDialog.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !catName) {
+            event.preventDefault();
+        }
+    });
+
     renderName();
     initAvatar();
+
+    if (catName === null) {
+        welcomeDialog.showModal();
+    }
 }

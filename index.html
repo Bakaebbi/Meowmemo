@@ -30,8 +30,8 @@
                     <div class="cat-profile-details">
                         <p id="cat-avatar-status" role="status"></p>
                         <div class="cat-profile-row">
-                            <p id="cat-name-display">Имя: <span id="cat-name">Шифу</span></p>
-                            <button id="edit-cat-name" type="button" aria-expanded="false" aria-controls="cat-name-form">Изменить имя</button>
+                            <p id="cat-name-display">Имя: <span id="cat-name">Не указано</span></p>
+                            <button id="edit-cat-name" type="button" aria-expanded="false" aria-controls="cat-name-form">Указать имя</button>
                             <form id="cat-name-form" hidden>
                                 <label for="cat-name-input">Имя котика</label>
                                 <input id="cat-name-input" name="catName" type="text" maxlength="40" required>
@@ -63,7 +63,7 @@
 
             <section class="daily-note" aria-labelledby="daily-note-title">
                 <h2 id="daily-note-title">Заметка на день</h2>
-                <label id="daily-note-label" for="daily-note-input">Как сегодня чувствует себя Шифу?</label>
+                <label id="daily-note-label" for="daily-note-input">Как сегодня чувствует себя твой котик?</label>
                 <textarea
                     id="daily-note-input"
                     rows="4"
@@ -92,6 +92,17 @@
                 <button id="avatar-crop-cancel" type="button">Отмена</button>
                 <button id="avatar-crop-save" type="button">Сохранить фото</button>
             </div>
+        </dialog>
+
+        <dialog id="welcome-dialog" class="welcome-dialog" aria-labelledby="welcome-title" aria-describedby="welcome-description">
+            <h2 id="welcome-title">Давай познакомимся</h2>
+            <p id="welcome-description">Начнём дневник заботы с имени твоего питомца.</p>
+            <form id="welcome-form">
+                <label for="welcome-cat-name">Как зовут твоего котика?</label>
+                <input id="welcome-cat-name" name="catName" type="text" maxlength="40" required autofocus>
+                <p id="welcome-status" role="status"></p>
+                <button type="submit">Начать дневник</button>
+            </form>
         </dialog>
 
         <script type="module" src="js/app.js"></script>
